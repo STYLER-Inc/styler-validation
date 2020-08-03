@@ -6,6 +6,8 @@ Styler Validation
 .. image:: https://img.shields.io/pypi/v/styler_validation.svg
         :target: https://pypi.python.org/pypi/styler_validation
 
+.. image:: https://github.com/STYLER-Inc/styler-validation/workflows/Python%20package/badge.svg
+
 
 Validators to be used as mixins in models
 

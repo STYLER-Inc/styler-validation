@@ -6,16 +6,44 @@ Styler Validation
 .. image:: https://img.shields.io/pypi/v/styler_validation.svg
         :target: https://pypi.python.org/pypi/styler_validation
 
-.. image:: https://img.shields.io/travis/brunotoshio/styler_validation.svg
-        :target: https://travis-ci.com/brunotoshio/styler_validation
-
-.. image:: https://readthedocs.org/projects/styler-validation/badge/?version=latest
-        :target: https://styler-validation.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
-
 
 Validators to be used as mixins in models
 
 
 * Free software: MIT license
-* Documentation: https://styler-validation.readthedocs.io.
+
+
+Usage
+-----
+
+Install from pypi::
+
+        pip install styler-validation
+
+Set validation rules for a class
+
+.. code-block:: python
+
+        from styler_validation import ValidatorMixin
+        from styler_validation import validators as va
+
+
+        class User(ValidatorMixin):
+            validates = [
+                ('name', va.is_required()),
+                ('age', va.is_required(), va.is_integer())
+            ]
+        
+        my_user = User()
+        result, errors = my_user.is_valid()
+
+        print(result)   # False
+        print(errors)   # {'user.name': 'Required field', 'user.age': 'Required field'}
+
+        my_user.name = 'John Doe'
+        my_user.age = 'nine'
+        result, errors = my_user.is_valid()
+
+        print(result)   # False
+        print(errors)   # {'user.age': 'Invalid value'}
+

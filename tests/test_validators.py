@@ -3,6 +3,8 @@
 
 from decimal import Decimal
 from unittest.mock import Mock
+import random
+import string
 
 from styler_validation import validators as va
 from styler_validation import messages as msg
@@ -704,3 +706,47 @@ class TestIf_:
         assert valid
         assert error is None
         validation.assert_not_called()
+
+
+class TestMaxLength:
+    def test_valid_max_length(self):
+        val = va.max_length(255)
+        model = MyModel()
+        model.prop = 'string_with_length_under_255'
+
+        valid, error = val(model, 'prop')
+
+        assert valid
+        assert error is None
+
+    def test_invalid_max_length(self):
+        length = 255
+        val = va.max_length(length)
+        model = MyModel()
+        model.prop = ''.join(random.choices(string.ascii_uppercase +
+                                            string.digits, k=256))
+
+        valid, error = val(model, 'prop')
+
+        assert not valid
+        assert error == f'{msg.STRING_TOO_LONG}{length}'
+
+    def test_none(self):
+        val = va.max_length(255)
+        model = MyModel()
+        model.prop = None
+
+        valid, error = val(model, 'prop')
+
+        assert valid
+        assert error is None
+
+    def test_invalid_type(self):
+        val = va.max_length(255)
+        model = MyModel()
+        model.prop = 1
+
+        valid, error = val(model, 'prop')
+
+        assert not valid
+        assert error == msg.INVALID_VALUE

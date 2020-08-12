@@ -313,3 +313,22 @@ def if_(condition_func, validation_func):
         return validation_func(obj, prop)
 
     return wrapper
+
+
+def max_length(length):
+    """ Generates a validator to validate if a string
+        is no longer than target prop's value.
+        Args:
+            length: max length of string
+    """
+    def wrapper(obj, prop):
+        value = getattr(obj, prop)
+        if value is None:
+            return (True, None)
+        if not isinstance(value, str):
+            return (False, msg.INVALID_VALUE)
+        if len(value) > length:
+            return (False, f'{msg.STRING_TOO_LONG}{length}')
+        return (True, None)
+
+    return wrapper

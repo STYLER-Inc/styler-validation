@@ -40,12 +40,12 @@ Set validation rules for a class
         result, errors = my_user.is_valid()
 
         print(result)   # False
-        print(errors)   # {'user.name': 'Required field', 'user.age': 'Required field'}
+        print(errors)   # {'user.name': ('required_value',), 'user.age': ('required_value',)}
 
         my_user.name = 'John Doe'
         my_user.age = 'nine'
         result, errors = my_user.is_valid()
 
         print(result)   # False
-        print(errors)   # {'user.age': 'Invalid value'}
+        print(errors)   # {'user.age': ('invalid_value',)}
 

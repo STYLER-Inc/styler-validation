@@ -23,7 +23,7 @@ class TestIsRequired:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == msg.REQUIRED_VALUE
+        assert error == (msg.REQUIRED_VALUE,)
 
     def test_valid(self):
         val = va.is_required()
@@ -75,7 +75,7 @@ class TestIsInteger:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == msg.INVALID_VALUE
+        assert error == (msg.INVALID_VALUE,)
 
     def test_value_mismatch(self):
         val = va.is_integer()
@@ -85,7 +85,7 @@ class TestIsInteger:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == msg.INVALID_VALUE
+        assert error == (msg.INVALID_VALUE,)
 
 
 class TestIsBetween:
@@ -109,9 +109,9 @@ class TestIsBetween:
         valid2, error2 = val(model, 'prop2')
 
         assert not valid
-        assert error == msg.LESS_OR_EQUAL_THAN + '10'
+        assert error == (msg.LESS_OR_EQUAL_THAN, 10)
         assert not valid2
-        assert error2 == msg.GREATER_OR_EQUAL_THAN + '0'
+        assert error2 == (msg.GREATER_OR_EQUAL_THAN, 0)
 
     def test_no_interval_set(self):
         val = va.is_between()
@@ -140,13 +140,13 @@ class TestIsBetween:
         assert valid
         assert error is None
         assert not valid2
-        assert error2 == msg.GREATER_OR_EQUAL_THAN + '0'
+        assert error2 == (msg.GREATER_OR_EQUAL_THAN, 0)
 
         valid, error = val2(model, 'prop')
         valid2, error2 = val2(model, 'prop2')
 
         assert not valid
-        assert error == msg.LESS_OR_EQUAL_THAN + '10'
+        assert error == (msg.LESS_OR_EQUAL_THAN, 10)
         assert valid2
         assert error2 is None
 
@@ -168,7 +168,7 @@ class TestIsBetween:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == msg.INVALID_VALUE
+        assert error == (msg.INVALID_VALUE,)
 
 
 class TestIsInside:
@@ -192,7 +192,7 @@ class TestIsInside:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == msg.INVALID_VALUE
+        assert error == (msg.INVALID_VALUE,)
 
     def test_none(self):
         accepted_values = {'a', 'b'}
@@ -225,7 +225,7 @@ class TestIsOfType:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == msg.INVALID_VALUE
+        assert error == (msg.INVALID_VALUE,)
 
     def test_none(self):
         val = va.is_of_type(Decimal)
@@ -257,7 +257,7 @@ class TestIsMoney:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == msg.NOT_ZERO
+        assert error == (msg.NOT_ZERO,)
 
     def test_negative(self):
         val = va.is_money()
@@ -267,7 +267,7 @@ class TestIsMoney:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == msg.POSITIVE_VALUE
+        assert error == (msg.POSITIVE_VALUE,)
 
     def test_none(self):
         val = va.is_money()
@@ -287,7 +287,7 @@ class TestIsMoney:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == msg.INVALID_VALUE
+        assert error == (msg.INVALID_VALUE,)
 
     def test_value_mismatch(self):
         val = va.is_money()
@@ -297,7 +297,7 @@ class TestIsMoney:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == msg.INVALID_VALUE
+        assert error == (msg.INVALID_VALUE,)
 
 
 class TestIsValidTime:
@@ -319,7 +319,7 @@ class TestIsValidTime:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == msg.INVALID_TIME
+        assert error == (msg.INVALID_TIME,)
 
     def test_none(self):
         val = va.is_valid_time()
@@ -353,7 +353,7 @@ class TestIsGreaterThanField:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == msg.GREATER_THAN + 'mymodel.prop2'
+        assert error == (msg.GREATER_THAN, 'mymodel.prop2')
 
     def test_none(self):
         val = va.is_greater_than_field('prop2')
@@ -364,7 +364,7 @@ class TestIsGreaterThanField:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == msg.INVALID_VALUE
+        assert error == (msg.INVALID_VALUE,)
 
     def test_default(self):
         val = va.is_greater_than_field('prop2', default=True)
@@ -410,7 +410,7 @@ class TestIsLessThanField:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == msg.LESS_THAN + 'mymodel.prop2'
+        assert error == (msg.LESS_THAN, 'mymodel.prop2')
 
     def test_none(self):
         val = va.is_less_than_field('prop2')
@@ -421,7 +421,7 @@ class TestIsLessThanField:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == msg.INVALID_VALUE
+        assert error == (msg.INVALID_VALUE,)
 
     def test_default(self):
         val = va.is_less_than_field('prop2', default=True)
@@ -465,7 +465,7 @@ class TestIsGreaterThanNumber:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == msg.GREATER_THAN + '10'
+        assert error == (msg.GREATER_THAN, 10)
 
     def test_none(self):
         val = va.is_greater_than_number(10)
@@ -475,7 +475,7 @@ class TestIsGreaterThanNumber:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == msg.INVALID_VALUE
+        assert error == (msg.INVALID_VALUE,)
 
     def test_default(self):
         val = va.is_greater_than_number(10, default=True)
@@ -517,7 +517,7 @@ class TestIsLessThanNumber:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == msg.LESS_THAN + '10'
+        assert error == (msg.LESS_THAN, 10)
 
     def test_none(self):
         val = va.is_less_than_number(10)
@@ -527,7 +527,7 @@ class TestIsLessThanNumber:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == msg.INVALID_VALUE
+        assert error == (msg.INVALID_VALUE,)
 
     def test_default(self):
         val = va.is_less_than_number(10, default=True)
@@ -569,7 +569,7 @@ class TestIsNotEmpty:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == msg.NOT_EMPTY
+        assert error == (msg.NOT_EMPTY,)
 
     def test_none(self):
         val = va.is_not_empty()
@@ -579,7 +579,7 @@ class TestIsNotEmpty:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == msg.INVALID_VALUE
+        assert error == (msg.INVALID_VALUE,)
 
     def test_default(self):
         val = va.is_not_empty(default=True)
@@ -659,7 +659,7 @@ class TestIsUuid:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == msg.INVALID_VALUE
+        assert error == (msg.INVALID_VALUE,)
 
     def test_none(self):
         val = va.is_uuid()
@@ -679,7 +679,7 @@ class TestIsUuid:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == msg.INVALID_VALUE
+        assert error == (msg.INVALID_VALUE,)
 
 
 class TestIf_:
@@ -729,7 +729,7 @@ class TestMaxLength:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == f'{msg.STRING_TOO_LONG}{length}'
+        assert error == (msg.STRING_TOO_LONG, length)
 
     def test_none(self):
         val = va.max_length(255)
@@ -749,4 +749,4 @@ class TestMaxLength:
         valid, error = val(model, 'prop')
 
         assert not valid
-        assert error == msg.INVALID_VALUE
+        assert error == (msg.INVALID_VALUE,)

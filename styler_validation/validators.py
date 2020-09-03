@@ -21,7 +21,7 @@ def is_required(accepts=None):
         if accepts and value in accepts:
             return (True, None)
         if not value:
-            return (False, msg.REQUIRED_VALUE)
+            return (False, (msg.REQUIRED_VALUE,))
         return (True, None)
 
     return wrapper
@@ -38,9 +38,9 @@ def is_integer():
         try:
             int(value)
         except ValueError:
-            return (False, msg.INVALID_VALUE)
+            return (False, (msg.INVALID_VALUE,))
         except TypeError:
-            return (False, msg.INVALID_VALUE)
+            return (False, (msg.INVALID_VALUE,))
         return (True, None)
 
     return wrapper
@@ -60,12 +60,12 @@ def is_between(min_=None, max_=None):
             return (True, None)
         try:
             if (min_ or min_ == 0) and value < min_:
-                return (False, f'{msg.GREATER_OR_EQUAL_THAN}{min_}')
+                return (False, (msg.GREATER_OR_EQUAL_THAN, min_))
             if (max_ or max_ == 0) and value > max_:
-                return (False, f'{msg.LESS_OR_EQUAL_THAN}{max_}')
+                return (False, (msg.LESS_OR_EQUAL_THAN, max_))
             return (True, None)
         except TypeError:
-            return (False, msg.INVALID_VALUE)
+            return (False, (msg.INVALID_VALUE,))
 
     return wrapper
 
@@ -83,7 +83,7 @@ def is_inside(accepted):
         if value is None:
             return (True, None)
         if value not in accepted:
-            return (False, msg.INVALID_VALUE)
+            return (False, (msg.INVALID_VALUE,))
         return (True, None)
 
     return wrapper
@@ -101,7 +101,7 @@ def is_of_type(type_):
         if value is None:
             return (True, None)
         if not isinstance(value, type_):
-            return (False, msg.INVALID_VALUE)
+            return (False, (msg.INVALID_VALUE,))
         return (True, None)
 
     return wrapper
@@ -121,13 +121,13 @@ def is_money(allow_zero=True):
         try:
             value = Decimal(value)
             if value < Decimal('0.0'):
-                return (False, msg.POSITIVE_VALUE)
+                return (False, (msg.POSITIVE_VALUE,))
             if not allow_zero and value == Decimal('0.0'):
-                return (False, msg.NOT_ZERO)
+                return (False, (msg.NOT_ZERO,))
         except TypeError:
-            return (False, msg.INVALID_VALUE)
+            return (False, (msg.INVALID_VALUE,))
         except InvalidOperation:
-            return (False, msg.INVALID_VALUE)
+            return (False, (msg.INVALID_VALUE,))
         return (True, None)
 
     return wrapper
@@ -142,7 +142,7 @@ def is_valid_time():
         if value is None:
             return (True, None)
         if not re.match(r'^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$', value):
-            return (False, msg.INVALID_TIME)
+            return (False, (msg.INVALID_TIME,))
         return (True, None)
 
     return wrapper
@@ -161,15 +161,15 @@ def is_greater_than_field(target_prop, allow_equal=False, default=False):
         value_1 = getattr(obj, prop)
         value_2 = getattr(obj, target_prop)
         if (not value_1 and value_1 != 0) or (not value_2 and value_2 != 0):
-            return (True, None) if default else (False, msg.INVALID_VALUE)
+            return (True, None) if default else (False, (msg.INVALID_VALUE,))
         class_prefix = obj.__class__.__name__.lower()
         if allow_equal:
             return (True, None) if value_1 >= value_2 else (
                 False,
-                f'{msg.GREATER_OR_EQUAL_THAN}{class_prefix}.{target_prop}')
+                (msg.GREATER_OR_EQUAL_THAN, f'{class_prefix}.{target_prop}'))
         else:
             return (True, None) if value_1 > value_2 else (
-                False, f'{msg.GREATER_THAN}{class_prefix}.{target_prop}')
+                False, (msg.GREATER_THAN, f'{class_prefix}.{target_prop}'))
 
     return wrapper
 
@@ -187,14 +187,15 @@ def is_less_than_field(target_prop, allow_equal=False, default=False):
         value_1 = getattr(obj, prop)
         value_2 = getattr(obj, target_prop)
         if (not value_1 and value_1 != 0) or (not value_2 and value_2 != 0):
-            return (True, None) if default else (False, msg.INVALID_VALUE)
+            return (True, None) if default else (False, (msg.INVALID_VALUE,))
         class_prefix = obj.__class__.__name__.lower()
         if allow_equal:
             return (True, None) if value_1 <= value_2 else (
-                False, f'{msg.LESS_OR_EQUAL_THAN}{class_prefix}.{target_prop}')
+                False, (
+                    msg.LESS_OR_EQUAL_THAN, f'{class_prefix}.{target_prop}'))
         else:
             return (True, None) if value_1 < value_2 else (
-                False, f'{msg.LESS_THAN}{class_prefix}.{target_prop}')
+                False, (msg.LESS_THAN, f'{class_prefix}.{target_prop}'))
 
     return wrapper
 
@@ -212,13 +213,13 @@ def is_greater_than_number(target, allow_equal=False, default=False):
         value_1 = getattr(obj, prop)
         value_2 = target
         if (not value_1 and value_1 != 0):
-            return (True, None) if default else (False, msg.INVALID_VALUE)
+            return (True, None) if default else (False, (msg.INVALID_VALUE,))
         if allow_equal:
             return (True, None) if value_1 >= value_2 else (
-                False, f'{msg.GREATER_OR_EQUAL_THAN}{target}')
+                False, (msg.GREATER_OR_EQUAL_THAN, target))
         else:
             return (True, None) if value_1 > value_2 else (
-                False, f'{msg.GREATER_THAN}{target}')
+                False, (msg.GREATER_THAN, target))
 
     return wrapper
 
@@ -236,13 +237,13 @@ def is_less_than_number(target, allow_equal=False, default=False):
         value_1 = getattr(obj, prop)
         value_2 = target
         if (not value_1 and value_1 != 0):
-            return (True, None) if default else (False, msg.INVALID_VALUE)
+            return (True, None) if default else (False, (msg.INVALID_VALUE,))
         if allow_equal:
             return (True, None) if value_1 <= value_2 else (
-                False, f'{msg.LESS_OR_EQUAL_THAN}{target}')
+                False, (msg.LESS_OR_EQUAL_THAN, target))
         else:
             return (True, None) if value_1 < value_2 else (
-                False, f'{msg.LESS_THAN}{target}')
+                False, (msg.LESS_THAN, target))
 
     return wrapper
 
@@ -254,9 +255,9 @@ def is_not_empty(default=False):
     def wrapper(obj, prop):
         value = getattr(obj, prop)
         if not value:
-            return (True, None) if default else (False, msg.INVALID_VALUE)
+            return (True, None) if default else (False, (msg.INVALID_VALUE,))
         if not value.strip():
-            return (False, msg.NOT_EMPTY)
+            return (False, (msg.NOT_EMPTY,))
         return (True, None)
     return wrapper
 
@@ -292,9 +293,9 @@ def is_uuid(version=4):
         try:
             _ = UUID(value, version=version)
         except ValueError:
-            return (False, msg.INVALID_VALUE)
+            return (False, (msg.INVALID_VALUE,))
         except (AttributeError, TypeError):
-            return (False, msg.INVALID_VALUE)
+            return (False, (msg.INVALID_VALUE,))
         return (True, None)
 
     return wrapper
@@ -326,9 +327,9 @@ def max_length(length):
         if value is None:
             return (True, None)
         if not isinstance(value, str):
-            return (False, msg.INVALID_VALUE)
+            return (False, (msg.INVALID_VALUE,))
         if len(value) > length:
-            return (False, f'{msg.STRING_TOO_LONG}{length}')
+            return (False, (msg.STRING_TOO_LONG, length))
         return (True, None)
 
     return wrapper
